@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Tempat Duduk Kelas Landscape</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { 
+            background-color: #f1f5f9; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 15px; 
+            margin: 0; 
+            min-width: 1000px;
+        }
+        
+        h1 { color: #0f172a; margin: 0 0 5px 0; font-size: 1.5rem; text-align: center; }
+        
+        .info-box { 
+            background: #ffffff; 
+            border-left: 4px solid #2563eb; 
+            padding: 8px 15px; 
+            border-radius: 6px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+            margin-bottom: 15px; 
+            text-align: center; 
+            font-size: 0.85rem;
+        }
+        .week-badge { font-weight: bold; color: #2563eb; }
+
+        .front-area {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            max-width: 1100px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .board { 
+            flex: 1;
+            background-color: #334155; 
+            color: white; 
+            text-align: center; 
+            padding: 10px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            letter-spacing: 2px; 
+            font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .teacher-desk {
+            width: 140px;
+            background-color: #854d0e;
+            color: white;
+            text-align: center;
+            padding: 10px 5px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 2px solid #a16207;
+        }
+
+        .classroom-landscape {
+            display: flex;
+            gap: 20px;
+            max-width: 1100px;
+            width: 100%;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .column-baris {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #e2e8f0;
+            padding: 10px;
+            border-radius: 10px;
+            flex: 1;
+        }
+
+        .column-baris.baris-4 {
+            flex: 1.2;
+            background-color: #cbd5e1;
+        }
+
+        .baris-header {
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #334155;
+            text-transform: uppercase;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #94a3b8;
+        }
+
+        .desk-pair { 
+            display: flex; 
+            gap: 5px; 
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #cbd5e1;
+        }
+
+        .seat { 
+            flex: 1; 
+            background-color: #f8fafc; 
+            border-radius: 6px; 
+            padding: 8px 2px; 
+            text-align: center; 
+            border-top: 3px solid #ccc; 
+            position: relative;
+        }
+
+        .seat::before {
+            content: '🔆🍋🍀';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            opacity: 0.5;
+        }
+
+        .seat.L { border-top-color: #3b82f6; background-color: #eff6ff; } 
+        .seat.P { border-top-color: #ec4899; background-color: #fdf2f8; } 
+
+        .gender-tag { font-size: 0.55rem; font-weight: bold; padding: 1px 3px; border-radius: 3px; display: inline-block; margin-bottom: 2px; }
+        .L .gender-tag { background-color: #dbeafe; color: #1e40af; }
+        .P .gender-tag { background-color: #fce7f3; color: #9d174d; }
+
+        .student-name { font-weight: 600; color: #0f172a; font-size: 0.75rem; word-break: break-word; }
+
+        .admin-panel { background-color: #ffffff; padding: 10px 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-top: 20px; text-align: center; }
+        .btn { background-color: #2563eb; color: white; border: none; padding: 8px 16px; font-size: 0.85rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.2s; margin: 3px; }
+        .btn:hover { background-color: #1d4ed8; }
+        .btn-admin { background-color: #475569; }
+        .btn-admin:hover { background-color: #334155; }
+    </style>
+</head>
+<body>
+
+    <h1>Rolling Tempat Duduk Kelas (Landscape)</h1>
+    
+    <div class="info-box">
+        <div>Status: <span class="week-badge" id="weekText">Agustus - Minggu 1</span></div>
+        <small id="ruleText">Aturan: Pola Meja Selang-Seling ([L-L] [P-P] [L-L] [P-P])</small>
+    </div>
+
+    <!-- Papan Tulis dan Meja Guru -->
+    <div class="front-area">
+        <div class="board">PAPAN TULIS / DEPAN KELAS</div>
+        <div class="teacher-desk">🪑 MEJA GURU</div>
+    </div>
+
+    <!-- Container Denah Landscape 4 Baris -->
+    <div class="classroom-landscape">
+        <!-- Baris 1: 8 Bangku (4 Pasang) -->
+        <div class="column-baris">
+            <div class="baris-header">Baris 1 (8 Bangku)</div>
+            <div id="baris1"></div>
+        </div>
+
+        <!-- Baris 2: 8 Bangku (4 Pasang) -->
+        <div class="column-baris">
+            <div class="baris-header">Baris 2 (8 Bangku)</div>
+            <div id="baris2"></div>
+        </div>
+
+        <!-- Baris 3: 8 Bangku (4 Pasang) -->
+        <div class="column-baris">
+            <div class="baris-header">Baris 3 (8 Bangku)</div>
+            <div id="baris3"></div>
+        </div>
+
+        <!-- Baris 4: 12 Bangku (6 Pasang) -->
+        <div class="column-baris baris-4">
+            <div class="baris-header">Baris 4 (12 Bangku)</div>
+            <div id="baris4"></div>
+        </div>
+    </div>
+
+    <!-- Panel Admin -->
+    <div class="admin-panel">
+        <div id="adminControls" style="display: none;">
+            <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #166534; font-weight: bold;">🔓 Mode Admin Aktif</p>
+            <button class="btn" onclick="rollSeats()">🎲 Roll Minggu Berikutnya</button>
+            <button class="btn btn-admin" onclick="logoutAdmin()">Keluar Admin</button>
+        </div>
+        <div id="loginControls">
+            <button class="btn btn-admin" onclick="loginAdmin()">🔑 Login Admin untuk Rolling</button>
+        </div>
+    </div>
+
+    <script>
+        const ALL_STUDENTS = [
+            { name: "Alfian", gender: "L" }, { name: "Ardila", gender: "P" }, { name: "Aya", gender: "P" },
+            { name: "Azkayra", gender: "P" }, { name: "Balqis", gender: "P" }, { name: "Bryan", gender: "L" },
+            { name: "Dean", gender: "L" }, { name: "Diral", gender: "L" }, { name: "Dwi", gender: "L" },
+            { name: "Enzhie", gender: "P" }, { name: "Fabio", gender: "L" }, { name: "Ghali", gender: "L" },
+            { name: "Havizh", gender: "L" }, { name: "Iqlima", gender: "P" }, { name: "Junizam", gender: "L" },
+            { name: "Haira", gender: "P" }, { name: "Khanza", gender: "P" }, { name: "Maezha", gender: "L" },
+            { name: "Ilyas", gender: "L" }, { name: "Mahar", gender: "L" }, { name: "Azmi", gender: "L" },
+            { name: "Gerrald", gender: "L" }, { name: "Atira", gender: "L" }, { name: "Gina", gender: "P" },
+            { name: "Kimora", gender: "P" }, { name: "Nazwa", gender: "P" }, { name: "Putri", gender: "P" },
+            { name: "Regina", gender: "P" }, { name: "Salman", gender: "L" }, { name: "Shafa", gender: "P" },
+            { name: "Shaqeela", gender: "P" }, { name: "Wira", gender: "L" }, { name: "Yahsya", gender: "P" },
+            { name: "Ariq", gender: "L" }, { name: "Javier", gender: "L" }, { name: "Yanwar", gender: "L" }
+        ];
+
+        // Daftar Anggota Geng yang HARUS Dipisahkan Total
+        const GANG_MEMBERS = ["Havizh", "Dwi", "Wira", "Junizam", "Mahar", "Alfian"];
+        
+        // Pantangan Diral Lainnya
+        const DIRAL_RESTRICTIONS = ["Ilyas", "Maezha", "Atira", "Alfian", "Dwi", "Havizh", "Wira", "Junizam", "Mahar"];
+        const ADMIN_PIN = "ARIQKM8A";
+
+        let currentWeek = parseInt(localStorage.getItem('v11_currentWeek')) || 1;
+        let isAdmin = false;
+
+        function shuffle(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Pengecekan Restriksi Diral
+        function isValidPairing(pairs) {
+            for (let pair of pairs) {
+                if (pair && pair[0] && pair[1]) {
+                    const names = [pair[0].name, pair[1].name];
+                    if (names.includes("Diral")) {
+                        const partner = names.find(n => n !== "Diral");
+                        if (DIRAL_RESTRICTIONS.includes(partner)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Pengecekan agar Anggota Geng TIDAK Pernah Berdekatan (Sebangku, Samping, Depan-Belakang)
+        function isGangSeparated(pairs) {
+            let gangIndices = [];
+            pairs.forEach((pair, idx) => {
+                if (pair && pair[0] && pair[1]) {
+                    if (GANG_MEMBERS.includes(pair[0].name) || GANG_MEMBERS.includes(pair[1].name)) {
+                        // Jika dalam 1 meja ada 2 anggota geng sekaligus = Batal
+                        if (GANG_MEMBERS.includes(pair[0].name) && GANG_MEMBERS.includes(pair[1].name)) {
+                            return false;
+                        }
+                        gangIndices.push(idx);
+                    }
+                }
+            });
+
+            // Cek jarak antar meja anggota geng
+            for (let i = 0; i < gangIndices.length; i++) {
+                for (let j = i + 1; j < gangIndices.length; j++) {
+                    const diff = Math.abs(gangIndices[i] - gangIndices[j]);
+                    // Jika bertetangga samping (diff=1) atau depan-belakang (diff=4)
+                    if (diff === 1 || diff === 4) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        function isDiralJavierAdjacent(pairs) {
+            let diralIdx = -1;
+            let javierIdx = -1;
+
+            pairs.forEach((pair, idx) => {
+                if (pair && pair[0] && pair[1]) {
+                    const names = [pair[0].name, pair[1].name];
+                    if (names.includes("Diral")) diralIdx = idx;
+                    if (names.includes("Javier")) javierIdx = idx;
+                }
+            });
+
+            if (diralIdx === -1 || javierIdx === -1) return false;
+            if (diralIdx === javierIdx) return true;
+            const diff = Math.abs(diralIdx - javierIdx);
+            return (diff === 1 || diff === 4);
+        }
+
+        function getTargetWeekForProximity() {
+            let savedTarget = localStorage.getItem('v11_targetWeekProximity');
+            if (!savedTarget) {
+                savedTarget = Math.floor(Math.random() * 3) + 2; // Acak antara minggu 2, 3, atau 4 (karena minggu 1 khusus Dean)
+                localStorage.setItem('v11_targetWeekProximity', savedTarget);
+            }
+            return parseInt(savedTarget);
+        }
+
+        function generateLayout(week) {
+            let valid = false;
+            let pairs = [];
+            let maxAttempts = 5000;
+            let attempts = 0;
+
+            const pattern = [
+                'L', 'P', 'L', 'P',
+                'P', 'L', 'P', 'L',
+                'L', 'P', 'L', 'P',
+                'P', 'L', 'P', 'L', 'P', 'L'
+            ];
+
+            const targetJavierWeek = getTargetWeekForProximity();
+
+            while (!valid && attempts < maxAttempts) {
+                attempts++;
+                pairs = [];
+
+                let boys = ALL_STUDENTS.filter(s => s.gender === 'L');
+                let girls = shuffle(ALL_STUDENTS.filter(s => s.gender === 'P'));
+
+                // Khusus MINGGU 1 AGUSTUS: Diral HARUS sebangku dengan Dean
+                if (week === 1) {
+                    const diralObj = ALL_STUDENTS.find(s => s.name === "Diral");
+                    const deanObj = ALL_STUDENTS.find(s => s.name === "Dean");
+                    
+                    boys = shuffle(boys.filter(s => s.name !== "Diral" && s.name !== "Dean"));
+                    pairs.push([diralObj, deanObj]); // Meja L-L pertama terisi Diral & Dean
+                } else {
+                    boys = shuffle(boys);
+                }
+
+                for (let type of pattern) {
+                    if (week === 1 && pairs.length === 1 && type === 'L') {
+                        continue; // Lewati 1 slot meja L karena Diral-Dean sudah masuk
+                    }
+
+                    if (type === 'L' && boys.length >= 2) {
+                        pairs.push([boys.pop(), boys.pop()]);
+                    } else if (type === 'P' && girls.length >= 2) {
+                        pairs.push([girls.pop(), girls.pop()]);
+                    } else if (type === 'P' && girls.length < 2 && boys.length >= 2) {
+                        pairs.push([boys.pop(), boys.pop()]);
+                    } else if (boys.length >= 2) {
+                        pairs.push([boys.pop(), boys.pop()]);
+                    }
+                }
+
+                // Jalankan Validasi
+                if (isValidPairing(pairs) && isGangSeparated(pairs)) {
+                    if (week === targetJavierWeek) {
+                        if (isDiralJavierAdjacent(pairs)) {
+                            valid = true;
+                        }
+                    } else {
+                        valid = true;
+                    }
+                }
+            }
+
+            return pairs;
+        }
+
+        function renderSeatHTML(student) {
+            if (!student) return '';
+            return `
+                <div class="seat ${student.gender}">
+                    <span class="gender-tag">${student.gender === 'L' ? 'L' : 'P'}</span>
+                    <div class="student-name">${student.name}</div>
+                </div>
+            `;
+        }
+
+        function renderSeating() {
+            let layoutData = null;
+            const storageKey = `seating_v11_week_${currentWeek}`;
+            let savedLayout = localStorage.getItem(storageKey);
+
+            if (savedLayout) {
+                try {
+                    let parsed = JSON.parse(savedLayout);
+                    if (parsed && Array.isArray(parsed) && parsed.length === 18) {
+                        layoutData = parsed;
+                    }
+                } catch (e) {
+                    layoutData = null;
+                }
+            }
+
+            if (!layoutData) {
+                layoutData = generateLayout(currentWeek);
+                localStorage.setItem(storageKey, JSON.stringify(layoutData));
+            }
+
+            document.getElementById('weekText').innerText = `Agustus - Minggu ${currentWeek}`;
+
+            const b1 = document.getElementById('baris1');
+            const b2 = document.getElementById('baris2');
+            const b3 = document.getElementById('baris3');
+            const b4 = document.getElementById('baris4');
+
+            b1.innerHTML = ''; b2.innerHTML = ''; b3.innerHTML = ''; b4.innerHTML = '';
+
+            layoutData.forEach((pair, index) => {
+                const desk = document.createElement('div');
+                desk.className = 'desk-pair';
+                desk.innerHTML = renderSeatHTML(pair[0]) + renderSeatHTML(pair[1]);
+
+                if (index < 4) {
+                    b1.appendChild(desk);
+                } else if (index < 8) {
+                    b2.appendChild(desk);
+                } else if (index < 12) {
+                    b3.appendChild(desk);
+                } else {
+                    b4.appendChild(desk);
+                }
+            });
+        }
+
+        function rollSeats() {
+            if (!isAdmin) return;
+
+            if (currentWeek === 4) {
+                const nextTarget = Math.floor(Math.random() * 3) + 2;
+                localStorage.setItem('v11_targetWeekProximity', nextTarget);
+            }
+
+            currentWeek = (currentWeek % 4) + 1;
+            localStorage.setItem('v11_currentWeek', currentWeek);
+            localStorage.removeItem(`seating_v11_week_${currentWeek}`);
+            renderSeating();
+        }
+
+        function loginAdmin() {
+            const pin = prompt("Masukkan PIN Admin:");
+            if (pin === ADMIN_PIN) {
+                isAdmin = true;
+                document.getElementById('adminControls').style.display = 'block';
+                document.getElementById('loginControls').style.display = 'none';
+            } else if (pin !== null) {
+                alert("PIN Salah!");
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            document.getElementById('adminControls').style.display = 'none';
+            document.getElementById('loginControls').style.display = 'block';
+        }
+
+        renderSeating();
+    </script>
+</body>
+</html>
